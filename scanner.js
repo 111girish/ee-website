@@ -13,7 +13,7 @@ keyWords.set(")", "CLOSE_PAREN");
 let input = "(not A & B) OR (C AND D)";
 input = input.toUpperCase();
 console.log(input);
-let tokens = [];
+let tokens = [{}];
 let j = 0;
 while (j < input.length) {
   if (input[j] == "(") {
