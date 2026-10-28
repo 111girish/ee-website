@@ -1,47 +1,51 @@
-const keyWords = new Map();
-keyWords.set("AND", "AND");
-keyWords.set("OR", "OR");
-keyWords.set("NOT", "NOT");
-keyWords.set("XOR", "XOR");
-keyWords.set("(", "OPEN_PAREN");
-keyWords.set(")", "CLOSE_PAREN");
+const keyWords = new Set(["AND", "NOT", "OR", "XOR"]);
 
-// const tokenType = {
-//   'IDENTIFIERS': IDENTIFIERS
-// };
-
-let input = "(not A & B) OR (C AND D)";
-input = input.toUpperCase();
-console.log(input);
-let tokens = [{}];
-let j = 0;
-while (j < input.length) {
-  if (input[j] == "(") {
-    tokens.push(keyWords.get("("));
-    j++;
-  } else if (input[j] == ")") {
-    tokens.push(keyWords.get(")"));
-    j++;
-  } else if (input[j] == " ") {
-    j++;
-    continue;
-  } else if (input.charCodeAt(j) >= 65 && input.charCodeAt(j) <= 90) {
-    const start = j;
-    while (
-      j < input.length &&
-      input.charCodeAt(j) >= 65 &&
-      input.charCodeAt(j) <= 90
-    )
+const retTokens = (input) => {
+  input = input.toUpperCase();
+  let tokens = [];
+  let j = 0,
+    line = 1,
+    lineStart = 0;
+  while (j < input.length) {
+    if (input[j] == "(") {
+      tokens.push({ value: "(", type: "OPEN_PAREN" });
       j++;
+    } else if (input[j] == ")") {
+      tokens.push({ value: ")", type: "CLOSE_PAREN" });
+      j++;
+    } else if (input[j] == " " || input[j] == "\r" || input[j] == "\t") {
+      j++;
+    } else if (input[j] == "\n") {
+      line++;      
+      j++;
+      lineStart = j;
+    } else if (input.charCodeAt(j) >= 65 && input.charCodeAt(j) <= 90) {
+      const start = j;
+      while (
+        j < input.length &&
+        input.charCodeAt(j) >= 65 &&
+        input.charCodeAt(j) <= 90
+      ) {
+        j++;
+      }
 
-    const slice = input.slice(start, j);
-    if (keyWords.has(`${slice}`)) {
-      tokens.push(keyWords.get(`${slice}`));
-    } else tokens.push("IDENTIFIERS " + slice);
-  } else{
-    console.log("Please enter words and parenthesis only!!!");
-    break;
+      const slice = input.slice(start, j);
+      if (keyWords.has(slice)) {
+        tokens.push({ value: slice, type: slice });
+      } else tokens.push({ value: slice, type: "IDENTIFIER" });
+    } else {
+      throw new Error(
+        ` Error using: ${input[j]} in index: ${j-lineStart+1} at line: ${line}. Please use words and parenthesis only!!!`,
+      );
+    }
   }
-}
+  return tokens;
+};
 
-console.log(tokens);
+let input = "A & C";
+try {
+  const re = retTokens(input);
+  console.log(re);
+} catch (err) {
+  console.log(err.message);
+}
