@@ -42,10 +42,4 @@ const retTokens = (input) => {
   return tokens;
 };
 
-let input = "A & C";
-try {
-  const re = retTokens(input);
-  console.log(re);
-} catch (err) {
-  console.log(err.message);
-}
+export default retTokens;
