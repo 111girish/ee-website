@@ -8,10 +8,10 @@ const retTokens = (input) => {
     lineStart = 0;
   while (j < input.length) {
     if (input[j] == "(") {
-      tokens.push({ value: "(", type: "OPEN_PAREN" });
+      tokens.push({ name: "(", type: "OPEN_PAREN" });
       j++;
     } else if (input[j] == ")") {
-      tokens.push({ value: ")", type: "CLOSE_PAREN" });
+      tokens.push({ name: ")", type: "CLOSE_PAREN" });
       j++;
     } else if (input[j] == " " || input[j] == "\r" || input[j] == "\t") {
       j++;
@@ -31,8 +31,8 @@ const retTokens = (input) => {
 
       const slice = input.slice(start, j);
       if (keyWords.has(slice)) {
-        tokens.push({ value: slice, type: slice });
-      } else tokens.push({ value: slice, type: "IDENTIFIER" });
+        tokens.push({  name: slice, type: slice });
+      } else tokens.push({  name: slice, type: "IDENTIFIER" });
     } else {
       throw new Error(
         ` Error using: ${input[j]} in index: ${j-lineStart+1} at line: ${line}. Please use words and parenthesis only!!!`,
