@@ -4,6 +4,7 @@ const map = new Map();
 map.set("A", true);
 map.set("B", true);
 map.set("C", false);
+map.set("D", false);
 
 const input = "A or B and C";
 const token = retTokens(input);
@@ -60,24 +61,10 @@ const evaluate = (node, tree) =>{
     const left = evaluate(node.left);
     const right = evaluate(node.right);
     return funcOr(left, right);
+  } else if (node.type == "NOT"){
+    const child = evaluate(node.child);
+    return funcNot(child);
   }
 }
 
-console.log(evaluate(tree));
-
-for (const t of token) {
-  if (t.type == "IDENTIFIER") {
-    t.value = map.get(`${t.name}`);
-  }
-}
-
-for (let i = 0; i < token.length; i++) {
-  if (token[i].type == "AND") {
-    console.log(funcAnd(token[i - 1].value, token[i + 1].value));
-  } else if (token[i].type == "OR") {
-    console.log(funcOr(token[i - 1].value, token[i + 1].value));
-  } else if (token[i].type == "NOT") {
-    console.log(funcNot(token[i + 1].value));
-  }
-}
-console.log(token);
+console.log(evaluate(tree2));
