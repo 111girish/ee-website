@@ -6,7 +6,7 @@ map.set("B", true);
 map.set("C", false);
 map.set("D", true);
 
-let input = "A";
+let input = "and B";
 const token = retTokens(input);
 
 const tree = {
@@ -36,62 +36,6 @@ const tree2 = {
   },
 };
 
-let current = 0;
-
-const factorAnd = (token) => {
-  const val1 = peek(token);
-  let expr = evalIdentifiers(val1);
-  if (token.type == "AND") {
-    advance();
-    const val2 = peek(token);
-    let right = evalIdentifiers(val2);
-    expr = { type: "AND", left: expr, right: right };
-  }
-  return expr;
-};
-
-const evalIdentifiers = (val) => {
-  if (val.type == "IDENTIFIER") {
-    advance();
-    return { type: "IDENTIFIER", name: val.name };
-  } else return "error in evalIdentifiers";
-};
-
-console.log(evalIdentifiers(token));
-
-const funcAnd = (val1, val2) => {
-  return val1 && val2;
-};
-const funcOr = (val1, val2) => {
-  return val1 || val2;
-};
-const funcNot = (val1) => {
-  return !val1;
-};
-const funcXor = (val1, val2) => {
-  return val1 !== val2;
-};
-
-const evaluate = (node, myMap) => {
-  if (node.type == "IDENTIFIER") {
-    return myMap.get(node.name);
-  } else if (node.type == "AND") {
-    const left = evaluate(node.left, myMap);
-    const right = evaluate(node.right, myMap);
-    return funcAnd(left, right);
-  } else if (node.type == "OR") {
-    const left = evaluate(node.left, myMap);
-    const right = evaluate(node.right, myMap);
-    return funcOr(left, right);
-  } else if (node.type == "XOR") {
-    const left = evaluate(node.left, myMap);
-    const right = evaluate(node.right, myMap);
-    return funcXor(left, right);
-  } else if (node.type == "NOT") {
-    const child = evaluate(node.child, myMap);
-    return funcNot(child);
-  }
-};
 
 class Parser {
   constructor(token) {
@@ -100,15 +44,38 @@ class Parser {
   }
 
   peek = () => {
-    return this.token[current];
+    return this.token[this.current];
   };
 
   advance = () => {
-    if (current < this.token.length) current++;
-    else return "error";
-    return this.token[current - 1];
+    if (this.current < this.token.length) this.current++;
+    else throw new Error("error in advance of parser");
+    return this.token[this.current - 1];
   };
 
-  
+  evalIdentifiers = (val) => {
+    if (val.type == "IDENTIFIER") {
+      this.advance();
+      return { type: "IDENTIFIER", name: val.name };
+    } else 
+      {
+        throw new Error("error in evalIdentifiers");
+      }
+  };
 
+  factorAnd = () => {
+    const val1 = this.peek();
+    let expr = this.evalIdentifiers(val1);
+    while (this.token[this.current]?.type == "AND" && this.current < this.token.length) {
+      this.advance();
+      const val2 = this.peek();
+      let right = this.evalIdentifiers(val2);
+      expr = { type: "AND", left: expr, right: right };
+    }
+    return expr;
+  };
 }
+
+const parser = new Parser ( token );
+console.log(parser.factorAnd());
+
