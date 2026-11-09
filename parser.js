@@ -65,6 +65,19 @@ class Parser {
   };
 
   
+  factorAnd = () => {
+    const val1 = this.peek();
+    let expr = this.evalIdentifiers(val1);
+    while (this.token[this.current]?.type == "AND") {
+      this.advance();
+      const val2 = this.peek();
+      let right = this.evalIdentifiers(val2);
+      expr = { type: "AND", left: expr, right: right };
+    }
+    return expr;
+  };
+
+  
   termOr = () => {
     let expr = this.factorAnd();
     while (this.token[this.current]?.type == "OR") {
@@ -77,17 +90,6 @@ class Parser {
 
 
 
-  factorAnd = () => {
-    const val1 = this.peek();
-    let expr = this.evalIdentifiers(val1);
-    while (this.token[this.current]?.type == "AND") {
-      this.advance();
-      const val2 = this.peek();
-      let right = this.evalIdentifiers(val2);
-      expr = { type: "AND", left: expr, right: right };
-    }
-    return expr;
-  };
 }
 export default Parser;
 
