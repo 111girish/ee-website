@@ -6,7 +6,7 @@ map.set("B", true);
 map.set("C", false);
 map.set("D", true);
 
-let input = "and B";
+let input = "A or B and C";
 const token = retTokens(input);
 
 const tree = {
@@ -54,6 +54,7 @@ class Parser {
   };
 
   evalIdentifiers = (val) => {
+    if (val == undefined) throw new Error("error!! value is undefined. ")
     if (val.type == "IDENTIFIER") {
       this.advance();
       return { type: "IDENTIFIER", name: val.name };
@@ -63,10 +64,23 @@ class Parser {
       }
   };
 
+  
+  termOr = () => {
+    let expr = this.factorAnd();
+    while (this.token[this.current]?.type == "OR") {
+      this.advance();
+      let right = this.factorAnd();
+      expr = { type: "OR", left: expr, right: right };
+    }
+    return expr;
+  };
+
+
+
   factorAnd = () => {
     const val1 = this.peek();
     let expr = this.evalIdentifiers(val1);
-    while (this.token[this.current]?.type == "AND" && this.current < this.token.length) {
+    while (this.token[this.current]?.type == "AND") {
       this.advance();
       const val2 = this.peek();
       let right = this.evalIdentifiers(val2);
@@ -75,7 +89,6 @@ class Parser {
     return expr;
   };
 }
+export default Parser;
 
-const parser = new Parser ( token );
-console.log(parser.factorAnd());
 
