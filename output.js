@@ -4,13 +4,13 @@ import retTokens from "./scanner.js";
 
 
 const map = new Map();
-map.set("A", false);
+map.set("A", true);
 map.set("B", true);
 map.set("C", true);
 map.set("D", true);
 
 
-let input = "A or B and C";
+let input = "A xor B and C";
 const token = retTokens(input);
 
 const parser = new Parser(token);
