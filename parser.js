@@ -14,24 +14,39 @@ class Parser {
     return this.token[this.current - 1];
   };
 
+  consume (val) {
+    if(val?.type == "CLOSE_PAREN") return this.advance();
+    
+    throw new Error("There is no closing bracket after open bracket");
+  }
+
   evalIdentifiers = (val) => {
     if (val == undefined) throw new Error("error!! value is undefined. ")
     if (val.type == "IDENTIFIER") {
       this.advance();
       return { type: "IDENTIFIER", name: val.name };
-    } else 
-      {
-        throw new Error("error in evalIdentifiers");
-      }
+    } else if(val.type == "OPEN_PAREN"){
+      this.advance();
+      const expr =  this.termOr();
+      const value = this.peek();
+      this.consume(value);
+      return expr;
+    }else{
+      throw new Error("error in evalIdentifiers");
+    }
+      
   };
 
   //Unary value it seems
   unaryNot = (val) =>{
-    let expr = this.evalIdentifiers(val);
-    while (this.token[this.current]?.type == "NOT"){
+    if(val.type == "NOT"){
       this.advance();
-      let 
+      const right = this.peek();
+      const val2 = this.unaryNot(right);
+      let expr = {type: "NOT", child: val2};
+      return expr;
     }
+    return this.evalIdentifiers(val);
   }
   
   factorAnd = () => {
@@ -40,7 +55,7 @@ class Parser {
     while (this.token[this.current]?.type == "AND") {
       this.advance();
       const val2 = this.peek();
-      let right = this.evalIdentifiers(val2);
+      let right = this.unaryNot(val2);
       expr = { type: "AND", left: expr, right: right };
     }
     return expr;
@@ -68,9 +83,15 @@ class Parser {
     return expr;
   };
 
-
-
+  expression () {
+    let tree =  this.termOr();
+    if(this.current == this.token.length){
+      return tree;
+    }
+    throw new Error("There seems to be a problem with your logic!!!");
+  }
 }
+
 export default Parser;
 
 

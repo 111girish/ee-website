@@ -38,6 +38,8 @@ const evaluate = (node, myMap) => {
   } else if (node.type == "NOT") {
     const child = evaluate(node.child, myMap);
     return funcNot(child);
+  } else {
+    throw new Error("Error in evaluate!!! It seems your logic has a mistake!!!");
   }
 };
 
