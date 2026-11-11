@@ -10,7 +10,7 @@ map.set("C", true);
 map.set("D", false);
 try{
 
-let input = "A";
+let input = "A and b or a";
 const token = retTokens(input);
 
 console.log(token);
