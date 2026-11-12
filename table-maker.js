@@ -28,5 +28,10 @@ while(rowNum){
   rowNum >>= 1;
 }
 
+const getBinary = (num) => {
+  return ((num >> 1) & 1);
+}
+
+
 
 console.log(rowNum);
