@@ -2,17 +2,13 @@ import Parser from "./parser.js";
 import evaluate from "./evaluator.js";
 import retTokens from "./scanner.js";
 
-const input = "A or B";
+const input = "A or B or C or D or E or F";
 const input2 = "C and D";
 
 const finalFunc = (input) => {
   const map = new Map();
 
   const token = retTokens(input);
-
-  const parser = new Parser(token);
-
-  const tree = parser.expression();
 
   const varNames = new Set();
 
@@ -21,6 +17,14 @@ const finalFunc = (input) => {
       varNames.add(token[i].name);
     }
   }
+
+  if (varNames.size >= 5) {
+    throw new Error("Please use 5 or less unique variables!!!");
+  }
+
+  const parser = new Parser(token);
+
+  const tree = parser.expression();
 
   let rowNum = 2 ** varNames.size;
   const getBinary = (num, i) => {
@@ -52,5 +56,11 @@ const finalFunc = (input) => {
   return truth_table;
 };
 
-finalFunc(input);
-finalFunc(input2);
+try{
+  finalFunc(input);
+  finalFunc(input2);
+} catch(err){
+  console.log(err);
+}
+
+
