@@ -2,10 +2,7 @@ import Parser from "./parser.js";
 import evaluate from "./evaluator.js";
 import retTokens from "./scanner.js";
 
-const input = "A or B or C or D or E or F";
-const input2 = "C and D";
-
-const finalFunc = (input) => {
+const makeTruthTable = (input) => {
   const map = new Map();
 
   const token = retTokens(input);
@@ -18,7 +15,7 @@ const finalFunc = (input) => {
     }
   }
 
-  if (varNames.size >= 5) {
+  if (varNames.size > 5) {
     throw new Error("Please use 5 or less unique variables!!!");
   }
 
@@ -52,15 +49,9 @@ const finalFunc = (input) => {
     truth_table = [...truth_table, { value: val, result: res }];
   }
 
-  console.log(truth_table);
   return truth_table;
 };
 
-try{
-  finalFunc(input);
-  finalFunc(input2);
-} catch(err){
-  console.log(err);
-}
+export default makeTruthTable;
 
 

@@ -1,12 +1,3 @@
-import Parser from "./parser.js";
-
-const map = new Map();
-map.set("A", true);
-map.set("B", true);
-map.set("C", false);
-map.set("D", true);
-
-
 const funcAnd = (val1, val2) => {
   return val1 && val2;
 };

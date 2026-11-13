@@ -39,6 +39,7 @@ class Parser {
 
   //Unary value it seems
   unaryNot = (val) =>{
+    if(val == undefined)throw new Error("error!! value is undefined. ");
     if(val.type == "NOT"){
       this.advance();
       const right = this.peek();
