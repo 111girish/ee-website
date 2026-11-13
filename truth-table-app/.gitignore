@@ -23,6 +23,3 @@ dist-ssr
 *.sln
 *.sw?
 
-#engine
-truth-table-app/src/engine/*
-
