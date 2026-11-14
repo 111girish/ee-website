@@ -15,8 +15,8 @@ const makeTruthTable = (input) => {
     }
   }
 
-  if (varNames.size > 5) {
-    throw new Error("Please use 5 or less unique variables!!!");
+  if (varNames.size > 7) {
+    throw new Error("Please use 7 or less unique variables!!!");
   }
 
   const parser = new Parser(token);

@@ -14,42 +14,47 @@ class Parser {
     return this.token[this.current - 1];
   };
 
-  consume (val) {
-    if(val?.type == "CLOSE_PAREN") return this.advance();
-    
-    throw new Error("There is no closing bracket after open bracket");
+  describe(tok) {
+    return tok == undefined ? "end of the expression" : `${tok.name}`;
+  }
+
+  consume(val) {
+    if (val?.type == "CLOSE_PAREN") return this.advance();
+
+    throw new Error(
+      `Expected ')' to close the bracket, but found ${this.describe(val)}.`
+    );
   }
 
   evalIdentifiers = (val) => {
-    if (val == undefined) throw new Error("error!! value is undefined. ")
+    if (val == undefined) throw new Error(`Expected a variable or '(' but found ${this.describe(val)}.`);
     if (val.type == "IDENTIFIER") {
       this.advance();
       return { type: "IDENTIFIER", name: val.name };
-    } else if(val.type == "OPEN_PAREN"){
+    } else if (val.type == "OPEN_PAREN") {
       this.advance();
-      const expr =  this.termOr();
+      const expr = this.termOr();
       const value = this.peek();
       this.consume(value);
       return expr;
-    }else{
-      throw new Error("error in evalIdentifiers");
+    } else {
+      throw new Error(`Expected a variable or '(' but found ${this.describe(val)}.`);
     }
-      
   };
 
   //Unary value it seems
-  unaryNot = (val) =>{
-    if(val == undefined)throw new Error("error!! value is undefined. ");
-    if(val.type == "NOT"){
+  unaryNot = (val) => {
+    if (val == undefined) throw new Error(`Expected a variable, NOT or '(' but found ${this.describe(val)}.`);
+    if (val.type == "NOT") {
       this.advance();
       const right = this.peek();
       const val2 = this.unaryNot(right);
-      let expr = {type: "NOT", child: val2};
+      let expr = { type: "NOT", child: val2 };
       return expr;
     }
     return this.evalIdentifiers(val);
-  }
-  
+  };
+
   factorAnd = () => {
     const val1 = this.peek();
     let expr = this.unaryNot(val1);
@@ -62,7 +67,6 @@ class Parser {
     return expr;
   };
 
-  
   factorXor = () => {
     let expr = this.factorAnd();
     while (this.token[this.current]?.type == "XOR") {
@@ -73,7 +77,6 @@ class Parser {
     return expr;
   };
 
-  
   termOr = () => {
     let expr = this.factorXor();
     while (this.token[this.current]?.type == "OR") {
@@ -84,15 +87,13 @@ class Parser {
     return expr;
   };
 
-  expression () {
-    let tree =  this.termOr();
-    if(this.current == this.token.length){
+  expression() {
+    let tree = this.termOr();
+    if (this.current == this.token.length) {
       return tree;
     }
-    throw new Error("There seems to be a problem with your logic!!!");
+    throw new Error(`Unexpected ${this.describe(this.peek())}. Expected AND, OR, XOR or the end of the expression.`);
   }
 }
 
 export default Parser;
-
-

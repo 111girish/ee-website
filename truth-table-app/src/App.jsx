@@ -68,7 +68,7 @@ function App() {
       <h1>Truth table maker</h1>
       <p className="help">
         Write an expression with AND, OR, NOT, XOR and brackets. Variables can
-        be any letters, up to 5 different ones.
+        be any letters, up to 7 different ones.
       </p>
 
       <label htmlFor="expr">Expression</label>
